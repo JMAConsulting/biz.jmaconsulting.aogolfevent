@@ -456,5 +456,11 @@ function _aogolfevent_civix_civicrm_alterSettingsFolders(&$metaDataFolders = NUL
 
 function _aogolfevent_civix_civicrm_entityTypes(&$entityTypes) {
   $entityTypes = array_merge($entityTypes, array (
+    'CRM_Aogolfevent_DAO_EventContributionPF' =>
+    array (
+      'name' => 'EventContributionPF',
+      'class' => 'CRM_Aogolfevent_DAO_EventContributionPF',
+      'table' => 'civicrm_event_contribution_pf',
+    ),
   ));
 }
