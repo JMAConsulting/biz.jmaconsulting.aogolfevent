@@ -13,6 +13,9 @@
 CRM.$(function($) {
   $('#crm-admin-options-form-block-is_donation').insertAfter('#max_value');
   if ($('#html_type').val() == "Text") {
+    $("#crm-admin-options-form-block-is_donation").show();
+  }
+  else {
     $("#crm-admin-options-form-block-is_donation").hide();
   }
 });
