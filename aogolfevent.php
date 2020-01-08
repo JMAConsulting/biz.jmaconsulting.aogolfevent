@@ -197,8 +197,8 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
             if ($(this).val() == " . GOLFER_PFV .") {
               $('input[name=\"" . DINNER_PF . "\"]').val('');
               $('input[name=\"" . DINNER_PF . "\"]').trigger('keyup');
-              $('.dinner_tickets-section').addClass('hiddenElement');
               $('#splitreceipt').removeClass('hiddenElement');
+              $('.dinner_tickets-section').addClass('hiddenElement');
               for (i = 1; i <= 4; i++) {
                 if (i == 1) {
                   $('#golfer_first_name_1').val($('#first_name').val());
@@ -281,7 +281,7 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
           $nullVar,
           CDNTAXRECEIPTS_MODE_WORKFLOW,
           TRUE
-        ); 
+        );
       }
     }
   }
