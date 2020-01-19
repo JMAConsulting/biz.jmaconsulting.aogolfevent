@@ -223,6 +223,10 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
           });
         });
       ");
+      $form->addYesNo('is_split_receipt', ts('Do you want to split the tax receipt?'));
+      CRM_Core_Region::instance('page-body')->add(array(
+        'template' => 'CRM/SplitReceipt.tpl',
+      ));
     }
   }
   if ($formName == 'CRM_Event_Form_Registration_ThankYou') {
