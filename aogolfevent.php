@@ -127,10 +127,10 @@ function aogolfevent_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
 function aogolfevent_civicrm_validateForm($formName, &$fields, &$files, &$form, &$errors) {
   if ($formName == 'CRM_Event_Form_Registration_Register') {
     if (!empty($fields[GOLFER_PF]) && $fields[GOLFER_PF] == GOLFER_PFV) {
-      for ($rowNumber = 1; $rowNumber <= 3; $rowNumber++) {
+      for ($rowNumber = 1; $rowNumber <= 4; $rowNumber++) {
         foreach ([
-          'golfer_first_name' => ts('First Name'),
-          'golfer_last_name' => ts('Last Name'),
+          'golfer_first_name' => ts('First Name of Golfer %1', [1 => $rowNumber]),
+          'golfer_last_name' => ts('Last Name of Golfer %1', [1 => $rowNumber]),
         ] as $name => $label) {
           if (empty($fields[$name][$rowNumber])) {
             $errors[sprintf("%s[%d]", $name, $rowNumber)] = ts('Please enter the ') . $label;
@@ -161,7 +161,7 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
         'golfer_first_name' => ts('First Name'),
         'golfer_last_name' => ts('Last Name')
       ];
-      for ($rowNumber = 1; $rowNumber <= 3; $rowNumber++) {
+      for ($rowNumber = 1; $rowNumber <= 4; $rowNumber++) {
         foreach ($fields as $fieldName => $fieldLabel) {
           $name = sprintf("%s[%d]", $fieldName, $rowNumber);
           $form->add('text', $name, $fieldLabel, NULL);
@@ -173,19 +173,47 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
       CRM_Core_Resources::singleton()->addScript(
         "CRM.$(function($) {
           $('#multiplehonorees').insertAfter($('#priceset'));
+          $('.dinner_tickets-section').addClass('hiddenElement');
+
+          $('#first_name').on('change', function(e, v) {
+            $('#golfer_first_name_1').val($(this).val());
+          });
+          $('#last_name').on('change', function(e, v) {
+            $('#golfer_last_name_1').val($(this).val());
+          });
+
           if ($('input[name=\"" . GOLFER_PF . "\"]:checked').val() == " . GOLFER_PFV . ") {
-            for (i = 1; i <= 3; i++) {
+            for (i = 1; i <= 4; i++) {
               $('#add-item-row-' + i).removeClass('hiddenElement');
             }
           }
+          if ($('input[name=\"" . GOLFER_PF . "\"]:checked').val() == 0) {
+            $('.dinner_tickets-section').removeClass('hiddenElement');
+          }
+
           $('input[name=\"" . GOLFER_PF . "\"]').on('click', function(e, v) {
             if ($(this).val() == " . GOLFER_PFV .") {
-              for (i = 1; i <= 3; i++) {
+              $('input[name=\"" . DINNER_PF . "\"]').val('');
+              $('input[name=\"" . DINNER_PF . "\"]').trigger('keyup');
+              $('.dinner_tickets-section').addClass('hiddenElement');
+              for (i = 1; i <= 4; i++) {
+                if (i == 1) {
+                  $('#golfer_first_name_1').val($('#first_name').val());
+                  $('#golfer_last_name_1').val($('#last_name').val());
+                }
                 $('#add-item-row-' + i).removeClass('hiddenElement');
               }
             }
             else {
-              for (i = 1; i <= 3; i++) {
+              if ($(this).val() == 0) {
+                $('.dinner_tickets-section').removeClass('hiddenElement');
+              }
+              else {
+                $('.dinner_tickets-section').addClass('hiddenElement');
+                $('input[name=\"" . DINNER_PF . "\"]').val('');
+                $('input[name=\"" . DINNER_PF . "\"]').trigger('keyup');
+              }
+              for (i = 1; i <= 4; i++) {
                 $('#add-item-row-' + i).addClass('hiddenElement');
                 var row = $('#add-item-row-' + i);
                 $('input[id^=\"golfer_first_name\"]', row).val('');
@@ -207,7 +235,7 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
     if (!empty($fv[GOLFER_PF]) &&  array_key_exists(GOLFER_PFV, $fv[GOLFER_PF])) {
       $avg = (float) ($fv['amount'] / 4);
       $softCredits = [];
-      for ($i = 1; $i <=3; $i++) {
+      for ($i = 2; $i <=4; $i++) {
         $softCredits[$i] = [];
         $params = [
           'first_name' => $fv['golfer_first_name'][$i],
@@ -243,11 +271,12 @@ function aogolfevent_civicrm_post($op, $objectName, $objectId, &$objectRef) {
       'entity_table' => 'civicrm_participant',
       'entity_id' => $objectRef->entity_id,
     ]);
-    if ($count == 1) {
-      $dao = new CRM_Aogolfevent_DAO_EventContributionPF();
-      $dao->price_field_id = $objectRef->price_field_id;
-      $dao->find(TRUE);
-      if (!empty($dao->is_donation)) {
+    $dao = new CRM_Aogolfevent_DAO_EventContributionPF();
+    $dao->price_field_id = $objectRef->price_field_id;
+    $dao->find(TRUE);
+
+    if ($count > 0 && !empty($dao->is_donation)) {
+      if ($count == 0) {
         $objectRef->participant_count = 0;
         $participantDAO = new CRM_Event_BAO_Participant();
         $participantDAO->id = $objectRef->entity_id;
@@ -255,6 +284,7 @@ function aogolfevent_civicrm_post($op, $objectName, $objectId, &$objectRef) {
         $participantDAO->status_id = 18;
         $participantDAO->save();
       }
+      CRM_Core_DAO::executeQuery("UPDATE civicrm_line_item SET participant_count = 0 WHERE id = $objectId ");
     }
   }
 }

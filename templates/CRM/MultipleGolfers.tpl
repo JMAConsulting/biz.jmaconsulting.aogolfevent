@@ -1,6 +1,6 @@
 <div id="multiplehonorees" class="crm-public-form-item crm-group custom_post_profile-group">
   <div class="crm-public-form-item crm-group">
-{section name='i' start=1 loop=4}
+{section name='i' start=1 loop=5}
   {assign var='rowNumber' value=$smarty.section.i.index}
   <div id="add-item-row-{$rowNumber}" class="honoree-row hiddenElement {cycle values="odd-row,even-row"}">
     <fieldset><legend>{ts}Golfer {$rowNumber}{/ts}</legend>
@@ -26,3 +26,13 @@
 {/section}
 </div>
 </div>
+
+{literal}
+<script type="text/javascript">
+CRM.$(function($) {
+  var dinnerticket = $('.golfer_s_-content').find('input[value="0"]').attr('id');
+  $('label[for="' + dinnerticket + '"]').html("<b>Dinner Tickets only</b>");
+
+});
+</script>
+{/literal}
