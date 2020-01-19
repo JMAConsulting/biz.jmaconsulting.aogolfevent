@@ -260,6 +260,21 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
         ];
         CRM_Contribute_BAO_Contribution::create($contriParams);
       }
+
+      // Check to see if receipts need to be split.
+      if (!empty($fv['is_split_receipt'])) {
+        $contribution = new CRM_Contribute_DAO_Contribution();
+        $contribution->id = $values['contributionId'];
+        $contribution->find(TRUE);
+
+        $nullVar = NULL;
+        cdntaxreceipts_issueTaxReceipt(
+          $contribution,
+          $nullVar,
+          CDNTAXRECEIPTS_MODE_WORKFLOW,
+          TRUE
+        ); 
+      }
     }
   }
 
