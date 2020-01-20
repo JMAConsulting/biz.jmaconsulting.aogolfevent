@@ -30,9 +30,9 @@
 {literal}
 <script type="text/javascript">
 CRM.$(function($) {
+  // Change -none - text
   var dinnerticket = $('.golfer_s_-content').find('input[value="0"]').attr('id');
   $('label[for="' + dinnerticket + '"]').html("<b>Dinner Tickets only</b>");
-
 });
 </script>
 {/literal}

@@ -174,6 +174,7 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
         "CRM.$(function($) {
           $('#multiplehonorees').insertAfter($('#priceset'));
           $('.dinner_tickets-section').addClass('hiddenElement');
+          $('#splitreceipt').addClass('hiddenElement');
 
           $('#first_name').on('change', function(e, v) {
             $('#golfer_first_name_1').val($(this).val());
@@ -186,6 +187,7 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
             for (i = 1; i <= 4; i++) {
               $('#add-item-row-' + i).removeClass('hiddenElement');
             }
+            $('#splitreceipt').removeClass('hiddenElement');
           }
           if ($('input[name=\"" . GOLFER_PF . "\"]:checked').val() == 0) {
             $('.dinner_tickets-section').removeClass('hiddenElement');
@@ -196,6 +198,7 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
               $('input[name=\"" . DINNER_PF . "\"]').val('');
               $('input[name=\"" . DINNER_PF . "\"]').trigger('keyup');
               $('.dinner_tickets-section').addClass('hiddenElement');
+              $('#splitreceipt').removeClass('hiddenElement');
               for (i = 1; i <= 4; i++) {
                 if (i == 1) {
                   $('#golfer_first_name_1').val($('#first_name').val());
@@ -205,6 +208,7 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
               }
             }
             else {
+              $('#splitreceipt').addClass('hiddenElement');
               if ($(this).val() == 0) {
                 $('.dinner_tickets-section').removeClass('hiddenElement');
               }
