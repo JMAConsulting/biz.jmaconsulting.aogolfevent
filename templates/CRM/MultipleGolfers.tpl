@@ -36,3 +36,14 @@ CRM.$(function($) {
 });
 </script>
 {/literal}
+<div class="crm-section dinner_guests-section hiddenElement">
+
+  <div class="label">
+    {$form.dinner_guests.label}
+  </div>
+  <div class="content dinner_guests-content">
+    {$form.dinner_guests.html}
+    <div class="description">{ts}Please enter the names of guests you will be bringing to dinner (one per line){/ts}</div>
+  </div>
+  <div class="clear"></div>
+</div>

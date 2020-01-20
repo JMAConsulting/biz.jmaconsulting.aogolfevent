@@ -167,6 +167,7 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
           $form->add('text', $name, $fieldLabel, NULL);
         }
       }
+      $form->add('textarea', 'dinner_guests', ts('Dinner Guests'));
       CRM_Core_Region::instance('page-body')->add(array(
         'template' => 'CRM/MultipleGolfers.tpl',
       ));
@@ -175,6 +176,8 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
           $('#multiplehonorees').insertAfter($('#priceset'));
           $('.dinner_tickets-section').addClass('hiddenElement');
           $('#splitreceipt').addClass('hiddenElement');
+          $('.dinner_guests-section').addClass('hiddenElement');
+          $('.dinner_guests-section').insertAfter('.dinner_tickets-section');
 
           $('#first_name').on('change', function(e, v) {
             $('#golfer_first_name_1').val($(this).val());
@@ -193,8 +196,21 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
             $('.dinner_tickets-section').removeClass('hiddenElement');
           }
 
+          $('input[name=\"" . DINNER_PF . "\"]').on('keyup', function(e, v) {
+            var value = $(this).val();
+            if (value > 1) {
+              $('.dinner_guests-section').removeClass('hiddenElement');
+            }
+            else {
+              $('.dinner_guests-section').addClass('hiddenElement');
+            }
+          });
+
           $('input[name=\"" . GOLFER_PF . "\"]').on('click', function(e, v) {
             if ($(this).val() == " . GOLFER_PFV .") {
+              $('.dinner_guests-section').addClass('hiddenElement');
+              $('.dinner_guests-section').val('');
+
               $('input[name=\"" . DINNER_PF . "\"]').val('');
               $('input[name=\"" . DINNER_PF . "\"]').trigger('keyup');
               $('#splitreceipt').removeClass('hiddenElement');
@@ -238,6 +254,13 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
     $values = $form->getVar('_values');
     if (empty($values['contributionId'])) {
       return;
+    }
+
+    if (!empty($fv['dinner_guests']) && ($eventID = $form->getVar('_eventId'))) {
+      civicrm_api3('Event', 'create', [
+        'id' => $eventID,
+        DINNER_GUESTS => $fv['dinner_guests'],
+      ]);
     }
 
     if (!empty($fv[GOLFER_PF]) &&  array_key_exists(GOLFER_PFV, $fv[GOLFER_PF])) {
