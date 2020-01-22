@@ -154,6 +154,25 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
       }
     }
   }
+  if ($formName == 'CRM_Event_Form_Registration_Confirm') {
+    $fv = $form->getVar('_params')[0];
+    $golfers = [
+      'first_name' => [],
+      'last_name' => [],
+    ];
+    for ($i = 1; $i <=4; $i++) {
+      if (!empty($fv['golfer_first_name'][$i])) {
+        $golfers['first_name'][$i] = $fv['golfer_first_name'][$i];
+        $golfers['last_name'][$i] = $fv['golfer_last_name'][$i];
+      }
+    }
+    if (!empty($golfers['first_name'])) {
+      $form->assign('golfers', $golfers);
+      CRM_Core_Region::instance('page-body')->add(array(
+        'template' => 'CRM/MultipleGolfersPage.tpl',
+      ));
+    }
+  }
   if ($formName == 'CRM_Event_Form_Registration_Register') {
     $eventType = civicrm_api3('Event', 'getValue', ['id' => $form->_eventId, 'return' => 'event_type_id']);
     if ($eventType == GOLFER_EVENT_TYPE) {
