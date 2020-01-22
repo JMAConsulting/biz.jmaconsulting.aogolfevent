@@ -292,9 +292,9 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
       return;
     }
 
-    if (!empty($fv['dinner_guests']) && ($eventID = $form->getVar('_eventId'))) {
+    if (!empty($fv['dinner_guests']) && ($participantID = $form->getVar('_participantId'))) {
       civicrm_api3('Participant', 'create', [
-        'id' => $form->getVar('_participantID'),
+        'id' => $participantID,
         DINNER_GUESTS => $fv['dinner_guests'],
       ]);
     }
