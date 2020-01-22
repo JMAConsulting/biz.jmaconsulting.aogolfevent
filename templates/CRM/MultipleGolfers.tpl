@@ -42,8 +42,8 @@ CRM.$(function($) {
     {$form.dinner_guests.label}
   </div>
   <div class="content dinner_guests-content">
+     <div class="description">{ts}Please enter the names of guests you will be bringing to dinner (one per line){/ts}</div>
     {$form.dinner_guests.html}
-    <div class="description">{ts}Please enter the names of guests you will be bringing to dinner (one per line){/ts}</div>
   </div>
   <div class="clear"></div>
 </div>
