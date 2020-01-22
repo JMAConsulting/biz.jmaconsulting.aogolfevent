@@ -129,8 +129,8 @@ function aogolfevent_civicrm_validateForm($formName, &$fields, &$files, &$form, 
     if (!empty($fields[GOLFER_PF]) && $fields[GOLFER_PF] == GOLFER_PFV) {
       for ($rowNumber = 1; $rowNumber <= 4; $rowNumber++) {
         foreach ([
-          'golfer_first_name' => ts('First Name of Golfer %1', [1 => $rowNumber]),
-          'golfer_last_name' => ts('Last Name of Golfer %1', [1 => $rowNumber]),
+          'golfer_first_name' => ts('First Name of Participant %1', [1 => $rowNumber]),
+          'golfer_last_name' => ts('Last Name of Participant %1', [1 => $rowNumber]),
         ] as $name => $label) {
           if (empty($fields[$name][$rowNumber])) {
             $errors[sprintf("%s[%d]", $name, $rowNumber)] = ts('Please enter the ') . $label;
@@ -152,6 +152,25 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
         $isDonation = CRM_Core_DAO::singleValueQuery("SELECT is_donation FROM civicrm_event_contribution_pf WHERE price_field_id = " . $priceFieldID);
         $form->setDefaults(['is_donation' => $isDonation]);
       }
+    }
+  }
+  if ($formName == 'CRM_Event_Form_Registration_Confirm') {
+    $fv = $form->getVar('_params')[0];
+    $golfers = [
+      'first_name' => [],
+      'last_name' => [],
+    ];
+    for ($i = 1; $i <=4; $i++) {
+      if (!empty($fv['golfer_first_name'][$i])) {
+        $golfers['first_name'][$i] = $fv['golfer_first_name'][$i];
+        $golfers['last_name'][$i] = $fv['golfer_last_name'][$i];
+      }
+    }
+    if (!empty($golfers['first_name'])) {
+      $form->assign('golfers', $golfers);
+      CRM_Core_Region::instance('page-body')->add(array(
+        'template' => 'CRM/MultipleGolfersPage.tpl',
+      ));
     }
   }
   if ($formName == 'CRM_Event_Form_Registration_Register') {
@@ -252,6 +271,23 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
   if ($formName == 'CRM_Event_Form_Registration_ThankYou') {
     $fv = $form->getVar('_params')[0];
     $values = $form->getVar('_values');
+    $golfers = [
+      'first_name' => [],
+      'last_name' => [],
+    ];
+    for ($i = 1; $i <=4; $i++) {
+      if (!empty($fv['golfer_first_name'][$i])) {
+        $golfers['first_name'][$i] = $fv['golfer_first_name'][$i];
+        $golfers['last_name'][$i] = $fv['golfer_last_name'][$i];
+      }
+    }
+    if (!empty($golfers['first_name'])) {
+      $form->assign('golfers', $golfers);
+      CRM_Core_Region::instance('page-body')->add(array(
+        'template' => 'CRM/MultipleGolfersPage.tpl',
+      ));
+    }
+
     if (empty($values['contributionId'])) {
       return;
     }
