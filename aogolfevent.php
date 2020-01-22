@@ -129,8 +129,8 @@ function aogolfevent_civicrm_validateForm($formName, &$fields, &$files, &$form, 
     if (!empty($fields[GOLFER_PF]) && $fields[GOLFER_PF] == GOLFER_PFV) {
       for ($rowNumber = 1; $rowNumber <= 4; $rowNumber++) {
         foreach ([
-          'golfer_first_name' => ts('First Name of Participant %1', [1 => $rowNumber]),
-          'golfer_last_name' => ts('Last Name of Participant %1', [1 => $rowNumber]),
+          'golfer_first_name' => ts('First Name'),
+          'golfer_last_name' => ts('Last Name'),
         ] as $name => $label) {
           if (empty($fields[$name][$rowNumber])) {
             $errors[sprintf("%s[%d]", $name, $rowNumber)] = ts('Please enter the ') . $label;
@@ -154,25 +154,6 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
       }
     }
   }
-  if ($formName == 'CRM_Event_Form_Registration_Confirm') {
-    $fv = $form->getVar('_params')[0];
-    $golfers = [
-      'first_name' => [],
-      'last_name' => [],
-    ];
-    for ($i = 1; $i <=4; $i++) {
-      if (!empty($fv['golfer_first_name'][$i])) {
-        $golfers['first_name'][$i] = $fv['golfer_first_name'][$i];
-        $golfers['last_name'][$i] = $fv['golfer_last_name'][$i];
-      }
-    }
-    if (!empty($golfers['first_name'])) {
-      $form->assign('golfers', $golfers);
-      CRM_Core_Region::instance('page-body')->add(array(
-        'template' => 'CRM/MultipleGolfersPage.tpl',
-      ));
-    }
-  }
   if ($formName == 'CRM_Event_Form_Registration_Register') {
     $eventType = civicrm_api3('Event', 'getValue', ['id' => $form->_eventId, 'return' => 'event_type_id']);
     if ($eventType == GOLFER_EVENT_TYPE) {
@@ -193,10 +174,10 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
       CRM_Core_Resources::singleton()->addScript(
         "CRM.$(function($) {
           $('#multiplehonorees').insertAfter($('#priceset'));
-          $('.dinner_tickets-section').addClass('hiddenElement');
+          $('.dinner_ticket_s_-section').addClass('hiddenElement');
           $('#splitreceipt').addClass('hiddenElement');
           $('.dinner_guests-section').addClass('hiddenElement');
-          $('.dinner_guests-section').insertAfter('.dinner_tickets-section');
+          $('.dinner_guests-section').insertAfter('.dinner_ticket_s_-section');
 
           $('#first_name').on('change', function(e, v) {
             $('#golfer_first_name_1').val($(this).val());
@@ -212,7 +193,7 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
             $('#splitreceipt').removeClass('hiddenElement');
           }
           if ($('input[name=\"" . GOLFER_PF . "\"]:checked').val() == 0) {
-            $('.dinner_tickets-section').removeClass('hiddenElement');
+            $('.dinner_ticket_s_-section').removeClass('hiddenElement');
           }
 
           $('input[name=\"" . DINNER_PF . "\"]').on('keyup', function(e, v) {
@@ -233,7 +214,7 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
               $('input[name=\"" . DINNER_PF . "\"]').val('');
               $('input[name=\"" . DINNER_PF . "\"]').trigger('keyup');
               $('#splitreceipt').removeClass('hiddenElement');
-              $('.dinner_tickets-section').addClass('hiddenElement');
+              $('.dinner_ticket_s_-section').addClass('hiddenElement');
               for (i = 1; i <= 4; i++) {
                 if (i == 1) {
                   $('#golfer_first_name_1').val($('#first_name').val());
@@ -245,10 +226,10 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
             else {
               $('#splitreceipt').addClass('hiddenElement');
               if ($(this).val() == 0) {
-                $('.dinner_tickets-section').removeClass('hiddenElement');
+                $('.dinner_ticket_s_-section').removeClass('hiddenElement');
               }
               else {
-                $('.dinner_tickets-section').addClass('hiddenElement');
+                $('.dinner_ticket_s_-section').addClass('hiddenElement');
                 $('input[name=\"" . DINNER_PF . "\"]').val('');
                 $('input[name=\"" . DINNER_PF . "\"]').trigger('keyup');
               }
@@ -271,30 +252,13 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
   if ($formName == 'CRM_Event_Form_Registration_ThankYou') {
     $fv = $form->getVar('_params')[0];
     $values = $form->getVar('_values');
-    $golfers = [
-      'first_name' => [],
-      'last_name' => [],
-    ];
-    for ($i = 1; $i <=4; $i++) {
-      if (!empty($fv['golfer_first_name'][$i])) {
-        $golfers['first_name'][$i] = $fv['golfer_first_name'][$i];
-        $golfers['last_name'][$i] = $fv['golfer_last_name'][$i];
-      }
-    }
-    if (!empty($golfers['first_name'])) {
-      $form->assign('golfers', $golfers);
-      CRM_Core_Region::instance('page-body')->add(array(
-        'template' => 'CRM/MultipleGolfersPage.tpl',
-      ));
-    }
-
     if (empty($values['contributionId'])) {
       return;
     }
 
     if (!empty($fv['dinner_guests']) && ($eventID = $form->getVar('_eventId'))) {
-      civicrm_api3('Event', 'create', [
-        'id' => $eventID,
+      civicrm_api3('Participant', 'create', [
+        'id' => $form->getVar('_participantID'),
         DINNER_GUESTS => $fv['dinner_guests'],
       ]);
     }
