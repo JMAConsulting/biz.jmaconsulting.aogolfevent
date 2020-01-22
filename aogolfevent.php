@@ -249,139 +249,117 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
       ));
     }
   }
-  if ($formName == 'CRM_Event_Form_Registration_Confirm') {
+  if ($formName == 'CRM_Event_Form_Registration_Confirm' || $formName == 'CRM_Event_Form_Registration_ThankYou') {
     $eventType = civicrm_api3('Event', 'getValue', ['id' => $form->_eventId, 'return' => 'event_type_id']);
-    if ($eventType != GOLFER_EVENT_TYPE) {
-      return;
-    }
-    $fv = $form->getVar('_params')[0];
-    $golfers = [
-      'first_name' => [],
-      'last_name' => [],
-    ];
-    for ($i = 1; $i <=4; $i++) {
-      if (!empty($fv['golfer_first_name'][$i])) {
-        $golfers['first_name'][$i] = $fv['golfer_first_name'][$i];
-        $golfers['last_name'][$i] = $fv['golfer_last_name'][$i];
+    if ($eventType == GOLFER_EVENT_TYPE) {
+      $fv = $form->getVar('_params')[0];
+      $golfers = [
+        'first_name' => [],
+        'last_name' => [],
+      ];
+      for ($i = 1; $i <=4; $i++) {
+        if (!empty($fv['golfer_first_name'][$i])) {
+          $golfers['first_name'][$i] = $fv['golfer_first_name'][$i];
+          $golfers['last_name'][$i] = $fv['golfer_last_name'][$i];
+        }
       }
-    }
-    if (!empty($golfers['first_name'])) {
-      $form->assign('golfers', $golfers);
-      CRM_Core_Region::instance('page-body')->add(array(
-        'template' => 'CRM/MultipleGolfersPage.tpl',
-      ));
+      if (!empty($golfers['first_name'])) {
+        $form->assign('golfers', $golfers);
+        CRM_Core_Region::instance('page-body')->add(array(
+          'template' => 'CRM/MultipleGolfersPage.tpl',
+        ));
+      }
+
+      if ($formName == 'CRM_Event_Form_Registration_ThankYou') {
+        $values = $form->getVar('_values');
+
+        if (empty($values['contributionId'])) {
+          return;
+        }
+
+        if (!empty($fv['dinner_guests']) && ($participantID = $form->getVar('_participantId'))) {
+          civicrm_api3('Participant', 'create', [
+            'id' => $participantID,
+            DINNER_GUESTS => $fv['dinner_guests'],
+          ]);
+        }
+
+        if (!empty($fv[GOLFER_PF]) &&  array_key_exists(GOLFER_PFV, $fv[GOLFER_PF])) {
+          $avg = (float) ($fv['amount'] / 4);
+          $softCredits = [];
+          for ($i = 2; $i <=4; $i++) {
+            $softCredits[$i] = [];
+            $params = [
+              'first_name' => $fv['golfer_first_name'][$i],
+              'last_name' => $fv['golfer_last_name'][$i],
+              'contact_type' => 'Individual',
+            ];
+            $params['id'] = CRM_Utils_Array::value('id', civicrm_api3('Contact' , 'get', array_merge(
+              $params,
+              ['options' => ['limit' => 1]]
+            )));
+            $contactID = civicrm_api3('Contact' , 'create', $params)['id'];
+            $softCredits[$i] = [
+              'contact_id' => $contactID,
+              'amount' => $avg,
+              'soft_credit_type_id' => CRM_Core_PseudoConstant::getKey('CRM_Contribute_BAO_ContributionSoft', 'soft_credit_type_id', 'On Behalf of'),
+            ];
+          }
+          if (!empty($softCredits)) {
+            $contriParams = [
+              'id' => $values['contributionId'],
+              'soft_credit' => $softCredits,
+            ];
+            CRM_Contribute_BAO_Contribution::create($contriParams);
+          }
+
+          // Check to see if receipts need to be split.
+          if (!empty($fv['is_split_receipt'])) {
+            $contribution = new CRM_Contribute_DAO_Contribution();
+            $contribution->id = $values['contributionId'];
+            $contribution->find(TRUE);
+
+            $nullVar = NULL;
+            cdntaxreceipts_issueTaxReceipt(
+              $contribution,
+              $nullVar,
+              CDNTAXRECEIPTS_MODE_WORKFLOW,
+              TRUE
+            );
+          }
+          else {
+            $contribution = new CRM_Contribute_DAO_Contribution();
+            $contribution->id = $values['contributionId'];
+            $contribution->find(TRUE);
+
+            $nullVar = NULL;
+            cdntaxreceipts_issueTaxReceipt(
+              $contribution,
+              $nullVar,
+              CDNTAXRECEIPTS_MODE_WORKFLOW,
+              FALSE,
+              TRUE
+            );
+          }
+        }
+        else {
+          // We send the receipt to the contributor.
+          $contribution = new CRM_Contribute_DAO_Contribution();
+          $contribution->id = $values['contributionId'];
+          $contribution->find(TRUE);
+
+          $nullVar = NULL;
+          cdntaxreceipts_issueTaxReceipt(
+            $contribution,
+            $nullVar,
+            CDNTAXRECEIPTS_MODE_WORKFLOW,
+            FALSE,
+            TRUE
+          );
+        }
+      }
     }
   }
-  if ($formName == 'CRM_Event_Form_Registration_ThankYou') {
-    $eventType = civicrm_api3('Event', 'getValue', ['id' => $form->_eventId, 'return' => 'event_type_id']);
-    if ($eventType != GOLFER_EVENT_TYPE) {  
-      return;
-    }
-    $fv = $form->getVar('_params')[0];
-    $values = $form->getVar('_values');
-    $golfers = [
-      'first_name' => [],
-      'last_name' => [],
-    ];
-    for ($i = 1; $i <=4; $i++) {
-      if (!empty($fv['golfer_first_name'][$i])) {
-        $golfers['first_name'][$i] = $fv['golfer_first_name'][$i];
-        $golfers['last_name'][$i] = $fv['golfer_last_name'][$i];
-      }
-    }
-    if (!empty($golfers['first_name'])) {
-      $form->assign('golfers', $golfers);
-      CRM_Core_Region::instance('page-body')->add(array(
-        'template' => 'CRM/MultipleGolfersPage.tpl',
-      ));
-    }
-
-    if (empty($values['contributionId'])) {
-      return;
-    }
-
-    if (!empty($fv['dinner_guests']) && ($participantID = $form->getVar('_participantId'))) {
-      civicrm_api3('Participant', 'create', [
-        'id' => $participantID,
-        DINNER_GUESTS => $fv['dinner_guests'],
-      ]);
-    }
-
-    if (!empty($fv[GOLFER_PF]) &&  array_key_exists(GOLFER_PFV, $fv[GOLFER_PF])) {
-      $avg = (float) ($fv['amount'] / 4);
-      $softCredits = [];
-      for ($i = 2; $i <=4; $i++) {
-        $softCredits[$i] = [];
-        $params = [
-          'first_name' => $fv['golfer_first_name'][$i],
-          'last_name' => $fv['golfer_last_name'][$i],
-          'contact_type' => 'Individual',
-        ];
-        $params['id'] = CRM_Utils_Array::value('id', civicrm_api3('Contact' , 'get', array_merge(
-          $params,
-          ['options' => ['limit' => 1]]
-        )));
-        $contactID = civicrm_api3('Contact' , 'create', $params)['id'];
-        $softCredits[$i] = [
-          'contact_id' => $contactID,
-          'amount' => $avg,
-          'soft_credit_type_id' => CRM_Core_PseudoConstant::getKey('CRM_Contribute_BAO_ContributionSoft', 'soft_credit_type_id', 'On Behalf of'),
-        ];
-      }
-      if (!empty($softCredits)) {
-        $contriParams = [
-          'id' => $values['contributionId'],
-          'soft_credit' => $softCredits,
-        ];
-        CRM_Contribute_BAO_Contribution::create($contriParams);
-      }
-
-      // Check to see if receipts need to be split.
-      if (!empty($fv['is_split_receipt'])) {
-        $contribution = new CRM_Contribute_DAO_Contribution();
-        $contribution->id = $values['contributionId'];
-        $contribution->find(TRUE);
-
-        $nullVar = NULL;
-        cdntaxreceipts_issueTaxReceipt(
-          $contribution,
-          $nullVar,
-          CDNTAXRECEIPTS_MODE_WORKFLOW,
-          TRUE
-        );
-      }
-      else {
-        $contribution = new CRM_Contribute_DAO_Contribution();
-        $contribution->id = $values['contributionId'];
-        $contribution->find(TRUE);
-
-        $nullVar = NULL;
-        cdntaxreceipts_issueTaxReceipt(
-          $contribution,
-          $nullVar,
-          CDNTAXRECEIPTS_MODE_WORKFLOW,
-          FALSE,
-          TRUE
-        );
-      }
-    }
-    else {
-      // We send the receipt to the contributor.
-      $contribution = new CRM_Contribute_DAO_Contribution();
-      $contribution->id = $values['contributionId'];
-      $contribution->find(TRUE);
-
-      $nullVar = NULL;
-      cdntaxreceipts_issueTaxReceipt(
-        $contribution,
-        $nullVar,
-        CDNTAXRECEIPTS_MODE_WORKFLOW,
-        FALSE,
-        TRUE
-      );
-    }
-  }
-
 }
 
 function aogolfevent_civicrm_post($op, $objectName, $objectId, &$objectRef) {
