@@ -250,6 +250,10 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
     }
   }
   if ($formName == 'CRM_Event_Form_Registration_Confirm') {
+    $eventType = civicrm_api3('Event', 'getValue', ['id' => $form->_eventId, 'return' => 'event_type_id']);
+    if ($eventType != GOLFER_EVENT_TYPE) {
+      return;
+    }
     $fv = $form->getVar('_params')[0];
     $golfers = [
       'first_name' => [],
@@ -269,6 +273,10 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
     }
   }
   if ($formName == 'CRM_Event_Form_Registration_ThankYou') {
+    $eventType = civicrm_api3('Event', 'getValue', ['id' => $form->_eventId, 'return' => 'event_type_id']);
+    if ($eventType != GOLFER_EVENT_TYPE) {  
+      return;
+    }
     $fv = $form->getVar('_params')[0];
     $values = $form->getVar('_values');
     $golfers = [
