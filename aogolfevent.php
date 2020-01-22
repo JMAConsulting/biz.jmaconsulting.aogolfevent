@@ -342,6 +342,35 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
           TRUE
         );
       }
+      else {
+        $contribution = new CRM_Contribute_DAO_Contribution();
+        $contribution->id = $values['contributionId'];
+        $contribution->find(TRUE);
+
+        $nullVar = NULL;
+        cdntaxreceipts_issueTaxReceipt(
+          $contribution,
+          $nullVar,
+          CDNTAXRECEIPTS_MODE_WORKFLOW,
+          FALSE,
+          TRUE
+        );
+      }
+    }
+    else {
+      // We send the receipt to the contributor.
+      $contribution = new CRM_Contribute_DAO_Contribution();
+      $contribution->id = $values['contributionId'];
+      $contribution->find(TRUE);
+
+      $nullVar = NULL;
+      cdntaxreceipts_issueTaxReceipt(
+        $contribution,
+        $nullVar,
+        CDNTAXRECEIPTS_MODE_WORKFLOW,
+        FALSE,
+        TRUE
+      );
     }
   }
 
