@@ -39,16 +39,6 @@
           {$golfers.street_address.$rowNumber}
         </div>
       </div>
-      {if $golfers.supplemental_address_1.$rowNumber}
-        <div class="crm-section">
-          <div class="label">
-            {ts}Address 2{/ts}
-          </div>
-          <div class="content">
-            {$golfers.supplemental_address_1.$rowNumber}
-          </div>
-        </div>
-      {/if}
       <div class="crm-section">
         <div class="label">
           {ts}City{/ts}

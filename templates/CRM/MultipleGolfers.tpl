@@ -42,15 +42,6 @@
       <br/>
       <div class="crm-section">
         <div class="label">
-          {$form.golfer_supplemental_address_1.$rowNumber.label}
-        </div>
-        <div class="content">
-          {$form.golfer_supplemental_address_1.$rowNumber.html}
-        </div>
-      </div>
-      <br/>
-      <div class="crm-section">
-        <div class="label">
           {$form.golfer_city.$rowNumber.label}*
         </div>
         <div class="content">
