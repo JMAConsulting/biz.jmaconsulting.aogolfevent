@@ -30,6 +30,7 @@
           {$golfers.email_address.$rowNumber}
         </div>
       </div>
+      <br/>
       <div class="crm-section">
         <div class="label">
           {ts}Address{/ts}
@@ -38,14 +39,16 @@
           {$golfers.street_address.$rowNumber}
         </div>
       </div>
-      <div class="crm-section">
-        <div class="label">
-          {ts}Address 2{/ts}
+      {if $golfers.supplemental_address_1.$rowNumber}
+        <div class="crm-section">
+          <div class="label">
+            {ts}Address 2{/ts}
+          </div>
+          <div class="content">
+            {$golfers.supplemental_address_1.$rowNumber}
+          </div>
         </div>
-        <div class="content">
-          {$golfers.supplemental_address_1.$rowNumber}
-        </div>
-      </div>
+      {/if}
       <div class="crm-section">
         <div class="label">
           {ts}City{/ts}
@@ -60,6 +63,30 @@
         </div>
         <div class="content">
           {$golfers.postal_code.$rowNumber}
+        </div>
+      </div>
+      <div class="crm-section">
+        <div class="label">
+          {ts}Province{/ts}
+        </div>
+        <div class="content">
+          {$golfers.state_province_id.$rowNumber}
+        </div>
+      </div>
+      <div class="crm-section">
+        <div class="label">
+          {ts}Country{/ts}
+        </div>
+        <div class="content">
+          {$golfers.country_id.$rowNumber}
+        </div>
+      </div>
+      <div class="crm-section">
+        <div class="label">
+          {ts}Province{/ts}
+        </div>
+        <div class="content">
+          {$golfers.state_province_id.$rowNumber}
         </div>
       </div>
     {/if}
