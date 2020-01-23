@@ -21,6 +21,48 @@
         {$golfers.last_name.$rowNumber}
       </div>
     </div>
+    {if $rowNumber > 1}
+      <div class="crm-section">
+        <div class="label">
+          {ts}Email Address{/ts}
+        </div>
+        <div class="content">
+          {$golfers.email_address.$rowNumber}
+        </div>
+      </div>
+      <div class="crm-section">
+        <div class="label">
+          {ts}Address{/ts}
+        </div>
+        <div class="content">
+          {$golfers.street_address.$rowNumber}
+        </div>
+      </div>
+      <div class="crm-section">
+        <div class="label">
+          {ts}Address 2{/ts}
+        </div>
+        <div class="content">
+          {$golfers.supplemental_address_1.$rowNumber}
+        </div>
+      </div>
+      <div class="crm-section">
+        <div class="label">
+          {ts}City{/ts}
+        </div>
+        <div class="content">
+          {$golfers.city.$rowNumber}
+        </div>
+      </div>
+      <div class="crm-section">
+        <div class="label">
+          {ts}Postcode{/ts}
+        </div>
+        <div class="content">
+          {$golfers.postal_code.$rowNumber}
+        </div>
+      </div>
+    {/if}
     </fieldset>
   </div>
 {/section}

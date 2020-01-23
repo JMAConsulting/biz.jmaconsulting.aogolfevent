@@ -159,12 +159,33 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
     if ($eventType == GOLFER_EVENT_TYPE) {
       $fields = [
         'golfer_first_name' => ts('First Name'),
-        'golfer_last_name' => ts('Last Name')
+        'golfer_last_name' => ts('Last Name'),
+        'golfer_email_address' => ts('Email Address'),
+        'golfer_street_address' => ts('Address'),
+        'golfer_supplemental_address_1 => ts('Address 2'),
+        'golfer_city' => ts('City'),
+        'golfer_postal_code' => ts('Postal Code'),
+        'golfer_state_province' => ts('Province'),
+        'golfer_country' => ts('Country'),
       ];
       for ($rowNumber = 1; $rowNumber <= 4; $rowNumber++) {
         foreach ($fields as $fieldName => $fieldLabel) {
+          if ($rowNumber == 1 && $fieldName !== 'golfer_last_name' && $fieldName !== 'golfer_first_name) {
+            continue;
+          }
           $name = sprintf("%s[%d]", $fieldName, $rowNumber);
-          $form->add('text', $name, $fieldLabel, NULL);
+          if ($fieldName !== 'golfer_state_province' && $fieldName !== 'golfer_country') {
+            $form->add('text', $name, $fieldLabel, NULL);
+          }
+          if ($fieldName === 'golfer_state_province') {
+            $form->addChainSelect($name, [
+              'control_field' => sprintf("%s[%d]", 'golfer_country', $rowNumber),
+              'label' => $fieldLabel,
+            ]);
+          }
+          if ($fieldName === 'golfer_country') {
+            $form->add('select', $name, $fieldLabel, ['' => ts('- select -')] + CRM_Core_PseudoConstant::country());
+          }
         }
       }
       $form->add('textarea', 'dinner_guests', ts('Dinner Guests'));
@@ -238,6 +259,13 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
                 var row = $('#add-item-row-' + i);
                 $('input[id^=\"golfer_first_name\"]', row).val('');
                 $('input[id^=\"golfer_last_name\"]', row).val('');
+                if (i > 1) {
+                  $('input[id^=\"golfer_email_address\"]', row).val('');
+                  $('input[id^=\"golfer_street_address\"]', row).val('');
+                  $('input[id^=\"golfer_city\"]', row).val('');
+                  $('input[id^=\"golfer_postal_code\"]', row).val('');
+                  $('input[id^=\"golfer_supplemental_address_1\"]', row).val('');
+                }
               }
             }
           });
@@ -258,11 +286,26 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
     $golfers = [
       'first_name' => [],
       'last_name' => [],
+      'email_addres' => [],
+      'street_address' => [],
+      'city' => [],
+      'postal_code' => [],
+      'supplemental_address_1' => [],
+      'state_province_id' => [],
+      'country_id' => [],
     ];
     for ($i = 1; $i <=4; $i++) {
       if (!empty($fv['golfer_first_name'][$i])) {
         $golfers['first_name'][$i] = $fv['golfer_first_name'][$i];
         $golfers['last_name'][$i] = $fv['golfer_last_name'][$i];
+        if (i > 1) {
+          $golfers['email_address'][$i] = $fv['golfer_email_address'][$i];
+          $golfers['street_address'][$i] = $fv['golfer_street_address'][$i];
+          $golfers['city'][$i] = $fv['golfer_city'][$i];
+          $golfers['postal_code'][$i] = $fv['golfer_postal_code'][$i];
+          $golfers['supplemental_address_1'][$i] = $fv['golfer_supplemental_address_1'][$i];
+          $golfers['state_province_id'][$i] = $fv['golfer_state_province_id'][$i]
+        }
       }
     }
     if (!empty($golfers['first_name'])) {
@@ -282,11 +325,23 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
     $golfers = [
       'first_name' => [],
       'last_name' => [],
+      'email_addres' => [],
+      'street_address' => [],
+      'city' => [],
+      'postal_code' => [],
+      'supplemental_address_1' => [],
     ];
     for ($i = 1; $i <=4; $i++) {
       if (!empty($fv['golfer_first_name'][$i])) {
         $golfers['first_name'][$i] = $fv['golfer_first_name'][$i];
         $golfers['last_name'][$i] = $fv['golfer_last_name'][$i];
+        if (i > 1) {
+          $golfers['email_address'][$i] = $fv['golfer_email_address'][$i];
+          $golfers['street_address'][$i] = $fv['golfer_street_address'][$i];
+          $golfers['city'][$i] = $fv['golfer_city'][$i];
+          $golfers['postal_code'][$i] = $fv['golfer_postal_code'][$i];
+          $golfers['supplemental_address_1'][$i] = $fv['golfer_supplemental_address_1'][$i];
+        }
       }
     }
     if (!empty($golfers['first_name'])) {
@@ -312,15 +367,26 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
       $softCredits = [];
       for ($i = 2; $i <=4; $i++) {
         $softCredits[$i] = [];
+        $addressParams = [
+          'location_type_id' => 'Billing',
+          'street_address' => $fv['golfer_street_address'][$i],
+          'city' => $fv['golfer_city'][$i],
+          'postal_code' => $fv['golfer_postal_code'][$i],
+        ];
+        if (!empty($fv['golfer_supplemental_address_1'][$i])) {
+          $addressParams['supplemental_address_1'] = $fv['golfer_supplemental_address_1'][$i];
+        }
         $params = [
           'first_name' => $fv['golfer_first_name'][$i],
           'last_name' => $fv['golfer_last_name'][$i],
           'contact_type' => 'Individual',
+          'email' => $fv['golfer_email_address'][$i],
         ];
         $params['id'] = CRM_Utils_Array::value('id', civicrm_api3('Contact' , 'get', array_merge(
           $params,
           ['options' => ['limit' => 1]]
         )));
+        $params['api.address.create'] = $addressParams;
         $contactID = civicrm_api3('Contact' , 'create', $params)['id'];
         $softCredits[$i] = [
           'contact_id' => $contactID,
