@@ -21,61 +21,59 @@
         {$form.golfer_last_name.$rowNumber.html}
       </div>
     </div>
-    {if $rowNumber > 1}
-      <div class="crm-section">
-        <div class="label">
-          {$form.golfer_email_address.$rowNumber.label}*
-        </div>
-        <div class="content">
-          {$form.golfer_email_address.$rowNumber.html}
-        </div>
+    <div class="crm-section">
+      <div class="label">
+        {$form.golfer_email_address.$rowNumber.label}*
       </div>
-      <br/>
-      <div class="crm-section">
-        <div class="label">
-          {$form.golfer_street_address.$rowNumber.label}*
-        </div>
-        <div class="content">
-          {$form.golfer_street_address.$rowNumber.html}
-        </div>
+      <div class="content">
+        {$form.golfer_email_address.$rowNumber.html}
       </div>
-      <br/>
-      <div class="crm-section">
-        <div class="label">
-          {$form.golfer_city.$rowNumber.label}*
-        </div>
-        <div class="content">
-          {$form.golfer_city.$rowNumber.html}
-        </div>
+    </div>
+    <br/>
+    <div class="crm-section">
+      <div class="label">
+        {$form.golfer_street_address.$rowNumber.label}*
       </div>
-      <br/>
-      <div class="crm-section">
-        <div class="label">
-          {$form.golfer_postal_code.$rowNumber.label}*
-        </div>
-        <div class="content">
-          {$form.golfer_postal_code.$rowNumber.html}
-        </div>
+      <div class="content">
+        {$form.golfer_street_address.$rowNumber.html}
       </div>
-      <br/>
-      <div class="crm-section">
-        <div class="label">
-          {$form.golfer_state_province.$rowNumber.label}*
-        </div>
-        <div class="content">
-          {$form.golfer_state_province.$rowNumber.html}
-        </div>
+    </div>
+    <br/>
+    <div class="crm-section">
+      <div class="label">
+        {$form.golfer_city.$rowNumber.label}*
       </div>
-      <br/>
-      <div class="crm-section">
-        <div class="label">
-          {$form.golfer_country.$rowNumber.label}*
-        </div>
-        <div class="content">
-          {$form.golfer_country.$rowNumber.html}
-        </div>
+      <div class="content">
+        {$form.golfer_city.$rowNumber.html}
       </div>
-    {/if}
+    </div>
+    <br/>
+    <div class="crm-section">
+      <div class="label">
+        {$form.golfer_postal_code.$rowNumber.label}*
+      </div>
+      <div class="content">
+        {$form.golfer_postal_code.$rowNumber.html}
+      </div>
+    </div>
+    <br/>
+    <div class="crm-section">
+      <div class="label">
+        {$form.golfer_state_province.$rowNumber.label}*
+      </div>
+      <div class="content">
+        {$form.golfer_state_province.$rowNumber.html}
+      </div>
+    </div>
+    <br/>
+    <div class="crm-section">
+      <div class="label">
+        {$form.golfer_country.$rowNumber.label}*
+      </div>
+      <div class="content">
+        {$form.golfer_country.$rowNumber.html}
+      </div>
+    </div>
     </fieldset>
   </div>
 {/section}

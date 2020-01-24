@@ -136,18 +136,16 @@ function aogolfevent_civicrm_validateForm($formName, &$fields, &$files, &$form, 
             $errors[sprintf("%s[%d]", $name, $rowNumber)] = ts('Please enter the %1 for participant %2', [1 => $label, 2 => $rowNumber]);
           }
         }
-        if ($rowNumber > 1) {
-          foreach ([
-            'golfer_email_address' => ts('Email Address'),
-            'golfer_street_address' => ts('Address'),
-            'golfer_city' => ts('City'),
-            'golfer_postal_code' => ts('Postal Code'),
-            'golfer_state_province' => ts('Province'),
-            'golfer_country' => ts('Country'),
-          ] as $name => $label) {
-            if (empty($fields[$name][$rowNumber])) {
-              $errors[sprintf("%s[%d]", $name, $rowNumber)] = ts('Please enter the %1 for participant %2', [1 => $label, 2 => $rowNumber]);
-            }
+        foreach ([
+          'golfer_email_address' => ts('Email Address'),
+          'golfer_street_address' => ts('Address'),
+          'golfer_city' => ts('City'),
+          'golfer_postal_code' => ts('Postal Code'),
+          'golfer_state_province' => ts('Province'),
+          'golfer_country' => ts('Country'),
+        ] as $name => $label) {
+          if (empty($fields[$name][$rowNumber])) {
+            $errors[sprintf("%s[%d]", $name, $rowNumber)] = ts('Please enter the %1 for participant %2', [1 => $label, 2 => $rowNumber]);
           }
         }
       }
@@ -184,9 +182,6 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
       ];
       for ($rowNumber = 1; $rowNumber <= 4; $rowNumber++) {
         foreach ($fields as $fieldName => $fieldLabel) {
-          if ($rowNumber == 1 && $fieldName !== 'golfer_last_name' && $fieldName !== 'golfer_first_name') {
-            continue;
-          }
           $name = sprintf("%s[%d]", $fieldName, $rowNumber);
           if ($fieldName !== 'golfer_state_province' && $fieldName !== 'golfer_country') {
             $form->add('text', $name, $fieldLabel, NULL);
@@ -257,6 +252,11 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
                 if (i == 1) {
                   $('#golfer_first_name_1').val($('#first_name').val());
                   $('#golfer_last_name_1').val($('#last_name').val());
+                  $('#golfer_street_address_1').val($('#street_address-1').val())
+                  $('#golfer_city_1').val($('#city-1').val())
+                  $('#golfer_postal_code_1').val($('#postal_code-1').val())
+                  $('#golfer_state_province_1').val($('#state_province-1').val())
+                  $('#golfer_country_1').val($('#country-1').val())
                 }
                 $('#add-item-row-' + i).removeClass('hiddenElement');
               }
@@ -314,15 +314,13 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
       if (!empty($fv['golfer_first_name'][$i])) {
         $golfers['first_name'][$i] = $fv['golfer_first_name'][$i];
         $golfers['last_name'][$i] = $fv['golfer_last_name'][$i];
-        if ($i > 1) {
-          $golfers['email_address'][$i] = $fv['golfer_email_address'][$i];
-          $golfers['street_address'][$i] = $fv['golfer_street_address'][$i];
-          $golfers['city'][$i] = $fv['golfer_city'][$i];
-          $golfers['postal_code'][$i] = $fv['golfer_postal_code'][$i];
-          // $golfers['supplemental_address_1'][$i] = $fv['golfer_supplemental_address_1'][$i];
-          $golfers['state_province_id'][$i] = CRM_Core_PseudoConstant::getLabel('CRM_Core_BAO_Address', 'state_province_id', $fv['golfer_state_province'][$i]);
-          $golfers['country_id'][$i] = CRM_Core_PseudoConstant::getLabel('CRM_Core_BAO_Address', 'country_id', $fv['golfer_country'][$i]);
-        }
+        $golfers['email_address'][$i] = $fv['golfer_email_address'][$i];
+        $golfers['street_address'][$i] = $fv['golfer_street_address'][$i];
+        $golfers['city'][$i] = $fv['golfer_city'][$i];
+        $golfers['postal_code'][$i] = $fv['golfer_postal_code'][$i];
+        // $golfers['supplemental_address_1'][$i] = $fv['golfer_supplemental_address_1'][$i];
+        $golfers['state_province_id'][$i] = CRM_Core_PseudoConstant::getLabel('CRM_Core_BAO_Address', 'state_province_id', $fv['golfer_state_province'][$i]);
+        $golfers['country_id'][$i] = CRM_Core_PseudoConstant::getLabel('CRM_Core_BAO_Address', 'country_id', $fv['golfer_country'][$i]);
       }
     }
     if (!empty($golfers['first_name'])) {
@@ -354,15 +352,13 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
       if (!empty($fv['golfer_first_name'][$i])) {
         $golfers['first_name'][$i] = $fv['golfer_first_name'][$i];
         $golfers['last_name'][$i] = $fv['golfer_last_name'][$i];
-        if ($i > 1) {
-          $golfers['email_address'][$i] = $fv['golfer_email_address'][$i];
-          $golfers['street_address'][$i] = $fv['golfer_street_address'][$i];
-          $golfers['city'][$i] = $fv['golfer_city'][$i];
-          $golfers['postal_code'][$i] = $fv['golfer_postal_code'][$i];
-          // $golfers['supplemental_address_1'][$i] = $fv['golfer_supplemental_address_1'][$i];
-          $golfers['state_province_id'][$i] = CRM_Core_PseudoConstant::getLabel('CRM_Core_BAO_Address', 'state_province_id', $fv['golfer_state_province'][$i]);
-          $golfers['country_id'][$i] = CRM_Core_PseudoConstant::getLabel('CRM_Core_BAO_Address', 'country_id', $fv['golfer_country'][$i]);
-        }
+        $golfers['email_address'][$i] = $fv['golfer_email_address'][$i];
+        $golfers['street_address'][$i] = $fv['golfer_street_address'][$i];
+        $golfers['city'][$i] = $fv['golfer_city'][$i];
+        $golfers['postal_code'][$i] = $fv['golfer_postal_code'][$i];
+        // $golfers['supplemental_address_1'][$i] = $fv['golfer_supplemental_address_1'][$i];
+        $golfers['state_province_id'][$i] = CRM_Core_PseudoConstant::getLabel('CRM_Core_BAO_Address', 'state_province_id', $fv['golfer_state_province'][$i]);
+        $golfers['country_id'][$i] = CRM_Core_PseudoConstant::getLabel('CRM_Core_BAO_Address', 'country_id', $fv['golfer_country'][$i]);
       }
     }
     if (!empty($golfers['first_name'])) {

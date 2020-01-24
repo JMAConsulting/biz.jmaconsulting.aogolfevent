@@ -21,65 +21,63 @@
         {$golfers.last_name.$rowNumber}
       </div>
     </div>
-    {if $rowNumber > 1}
-      <div class="crm-section">
-        <div class="label">
-          {ts}Email Address{/ts}
-        </div>
-        <div class="content">
-          {$golfers.email_address.$rowNumber}
-        </div>
+    <div class="crm-section">
+      <div class="label">
+        {ts}Email Address{/ts}
       </div>
-      <br/>
-      <div class="crm-section">
-        <div class="label">
-          {ts}Address{/ts}
-        </div>
-        <div class="content">
-          {$golfers.street_address.$rowNumber}
-        </div>
+      <div class="content">
+        {$golfers.email_address.$rowNumber}
       </div>
-      <div class="crm-section">
-        <div class="label">
-          {ts}City{/ts}
-        </div>
-        <div class="content">
-          {$golfers.city.$rowNumber}
-        </div>
+    </div>
+    <br/>
+    <div class="crm-section">
+      <div class="label">
+        {ts}Address{/ts}
       </div>
-      <div class="crm-section">
-        <div class="label">
-          {ts}Postcode{/ts}
-        </div>
-        <div class="content">
-          {$golfers.postal_code.$rowNumber}
-        </div>
+      <div class="content">
+        {$golfers.street_address.$rowNumber}
       </div>
-      <div class="crm-section">
-        <div class="label">
-          {ts}Province{/ts}
-        </div>
-        <div class="content">
-          {$golfers.state_province_id.$rowNumber}
-        </div>
+    </div>
+    <div class="crm-section">
+      <div class="label">
+        {ts}City{/ts}
       </div>
-      <div class="crm-section">
-        <div class="label">
-          {ts}Country{/ts}
-        </div>
-        <div class="content">
-          {$golfers.country_id.$rowNumber}
-        </div>
+      <div class="content">
+        {$golfers.city.$rowNumber}
       </div>
-      <div class="crm-section">
-        <div class="label">
-          {ts}Province{/ts}
-        </div>
-        <div class="content">
-          {$golfers.state_province_id.$rowNumber}
-        </div>
+    </div>
+    <div class="crm-section">
+      <div class="label">
+        {ts}Postcode{/ts}
       </div>
-    {/if}
+      <div class="content">
+        {$golfers.postal_code.$rowNumber}
+      </div>
+    </div>
+    <div class="crm-section">
+      <div class="label">
+        {ts}Province{/ts}
+      </div>
+      <div class="content">
+        {$golfers.state_province_id.$rowNumber}
+      </div>
+    </div>
+    <div class="crm-section">
+      <div class="label">
+        {ts}Country{/ts}
+      </div>
+      <div class="content">
+        {$golfers.country_id.$rowNumber}
+      </div>
+    </div>
+    <div class="crm-section">
+      <div class="label">
+        {ts}Province{/ts}
+      </div>
+      <div class="content">
+        {$golfers.state_province_id.$rowNumber}
+      </div>
+    </div>
     </fieldset>
   </div>
 {/section}
