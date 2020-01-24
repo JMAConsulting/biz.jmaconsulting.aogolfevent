@@ -218,6 +218,24 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
           $('#last_name').on('change', function(e, v) {
             $('#golfer_last_name_1').val($(this).val());
           });
+          $('#email-1').on('change', function(e, v) {
+            $('#golfer_email_address_1').val($(this).val());
+          });
+          $('#street_address-Primary').on('change', function(e, v) {
+            $('#golfer_street_address_1').val($(this).val());
+          });
+          $('#city-Primary').on('change', function(e, v) {
+            $('#golfer_city_1').val($(this).val());
+          });
+          $('#postal_code-Primary').on('change', function(e, v) {
+            $('#golfer_postal_code_1').val($(this).val());
+          });
+          $('#state_province-Primary').on('change', function(e, v) {
+            $('#golfer_state_province_1').val($(this).val());
+          });
+          $('#last_name').on('change', function(e, v) {
+            $('#golfer_country_1').val($(this).val());
+          });
 
           if ($('input[name=\"" . GOLFER_PF . "\"]:checked').val() == " . GOLFER_PFV . ") {
             for (i = 1; i <= 4; i++) {
@@ -252,11 +270,11 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
                 if (i == 1) {
                   $('#golfer_first_name_1').val($('#first_name').val());
                   $('#golfer_last_name_1').val($('#last_name').val());
-                  $('#golfer_street_address_1').val($('#street_address-1').val())
-                  $('#golfer_city_1').val($('#city-1').val())
-                  $('#golfer_postal_code_1').val($('#postal_code-1').val())
-                  $('#golfer_state_province_1').val($('#state_province-1').val())
-                  $('#golfer_country_1').val($('#country-1').val())
+                  $('#golfer_email_address_1').val($('#email-1').val());
+                  $('#golfer_street_address_1').val($('#street_address-Primary').val())
+                  $('#golfer_city_1').val($('#city-Primary').val())
+                  $('#golfer_postal_code_1').val($('#postal_code-Primary').val())
+                  $('#golfer_state_province_1').val($('#state_province-Primary').val())
                 }
                 $('#add-item-row-' + i).removeClass('hiddenElement');
               }
