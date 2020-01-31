@@ -150,6 +150,9 @@ function aogolfevent_civicrm_validateForm($formName, &$fields, &$files, &$form, 
         }
       }
     }
+    if (empty($fields[GOLFER_PF]) && empty($fields[DINNER_PF]) && empty($fields['price_882'])) {
+      $errors[GOLFER_PF] = E::ts('Please select either a golfer or dinner ticket or enter a donation amount');
+    }
   }
 }
 
