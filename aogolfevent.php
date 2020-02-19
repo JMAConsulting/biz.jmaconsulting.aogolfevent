@@ -125,7 +125,7 @@ function aogolfevent_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
 }
 
 function aogolfevent_civicrm_validateForm($formName, &$fields, &$files, &$form, &$errors) {
-  if ($formName == 'CRM_Event_Form_Registration_Register') {
+  if ($formName == 'CRM_Event_Form_Registration_Register' && empty($form->_noFees)) {
     if (!empty($fields[GOLFER_PF]) && $fields[GOLFER_PF] == GOLFER_PFV) {
       for ($rowNumber = 1; $rowNumber <= 4; $rowNumber++) {
         foreach ([
@@ -169,7 +169,7 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
       }
     }
   }
-  if ($formName == 'CRM_Event_Form_Registration_Register') {
+  if ($formName == 'CRM_Event_Form_Registration_Register' && empty($form->_noFees)) {
     $eventType = civicrm_api3('Event', 'getValue', ['id' => $form->_eventId, 'return' => 'event_type_id']);
     if ($eventType == GOLFER_EVENT_TYPE) {
       $fields = [
@@ -314,7 +314,7 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
       ));
     }
   }
-  if ($formName == 'CRM_Event_Form_Registration_Confirm') {
+  if ($formName == 'CRM_Event_Form_Registration_Confirm' && empty($form->_noFees)) {
     $eventType = civicrm_api3('Event', 'getValue', ['id' => $form->_eventId, 'return' => 'event_type_id']);
     if ($eventType != GOLFER_EVENT_TYPE) {
       return;
@@ -351,7 +351,7 @@ function aogolfevent_civicrm_buildForm($formName, &$form) {
       ));
     }
   }
-  if ($formName == 'CRM_Event_Form_Registration_ThankYou') {
+  if ($formName == 'CRM_Event_Form_Registration_ThankYou' && empty($form->_noFees)) {
     $eventType = civicrm_api3('Event', 'getValue', ['id' => $form->_eventId, 'return' => 'event_type_id']);
     if ($eventType != GOLFER_EVENT_TYPE) {  
       return;
