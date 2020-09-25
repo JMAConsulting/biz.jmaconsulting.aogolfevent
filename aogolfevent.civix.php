@@ -477,7 +477,7 @@ function _aogolfevent_civix_civicrm_entityTypes(&$entityTypes) {
     'CRM_Aogolfevent_DAO_EventContributionPF' => [
       'name' => 'EventContributionPF',
       'class' => 'CRM_Aogolfevent_DAO_EventContributionPF',
-      'table' => 'civicrm_event_contribution_p_f',
+      'table' => 'civicrm_event_contribution_pf',
     ],
   ]);
 }
